@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Button, Chip, TextField, Typography, FormControlLabel, Checkbox } from '@mui/material';
+import { Box, Button, Chip, TextField, Typography } from '@mui/material';
 import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import Alert from './Alert';
@@ -9,12 +9,16 @@ import useLocalStorage from '../hooks/useLocalStorage';
 const categories = ['Tech', 'News', 'Sports', 'Science'];
 
 const CreateBlog = () => {
-
     const [currentUser, setCurrentUser] = useLocalStorage('current_user', null);
 
     const [blogInfo, setBlogInfo] = useState({
-        userId: currentUser.uid // Assume you will handle user ID correctly based on your authentication setup
+        userId: currentUser?.uid, // Ensure currentUser is not null when accessing uid
+        title: '',
+        description: '',
+        image: '',
+        category: ''
     });
+
     const [alertConfig, setAlertConfig] = useState({ isOpen: false, message: '', color: 'info' });
 
     const blogCollectionReference = collection(db, "blogs");
@@ -30,10 +34,11 @@ const CreateBlog = () => {
         try {
             await addDoc(blogCollectionReference, blogInfo);
             setAlertConfig({ isOpen: true, message: 'Successfully Created a blog', color: 'success' });
-            // Reset form (optional)
-            //setBlogInfo({ title: '', description: '', image: '', category: '', userId: '' });
+            // Optionally reset form fields after successful blog creation
+            setBlogInfo({ userId: currentUser?.uid, title: '', description: '', image: '', category: '' });
         } catch (error) {
-            setAlertConfig({ isOpen: true, message: 'There was an error creating the blog', color: 'error' });
+            console.error("Error adding document: ", error);
+            setAlertConfig({ isOpen: true, message: `There was an error creating the blog: ${error.message}`, color: 'error' });
         }
     };
 
