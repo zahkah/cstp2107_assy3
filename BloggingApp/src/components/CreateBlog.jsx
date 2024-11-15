@@ -12,7 +12,7 @@ const CreateBlog = () => {
     const [currentUser, setCurrentUser] = useLocalStorage('current_user', null);
 
     const [blogInfo, setBlogInfo] = useState({
-        userId: currentUser?.uid, // Ensure currentUser is not null when accessing uid
+        userId: currentUser?.uid, 
         title: '',
         description: '',
         image: '',

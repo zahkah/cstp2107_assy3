@@ -1,25 +1,20 @@
 import React from 'react';
-import { Typography, Box } from '@mui/material';
-import BlogCard from '../components/BlogCard';
-
+import { useAuth } from './path/to/auth/hooks'; // Adjust the import path as necessary
+import BlogCard from './components/BlogCard';
+import { useFetchFavorites } from './hooks/useFetchFavorites'; // Ensure the path is correct
 
 const FavoritesPage = () => {
-    // Mock data or fetch your real favorites data here
-
-    //to be done later
-
-    const favoriteBlogs = [
-        { id: 1, title: "Blog Title 1", description: "Description here", image: "https://via.placeholder.com/150" },
-        { id: 2, title: "Blog Title 2", description: "Description here", image: "https://via.placeholder.com/150" }
-    ];
+    const { user } = useAuth(); // Your method of getting the current user
+    const favorites = useFetchFavorites(user?.uid); // Fetch favorites using the user's UID
 
     return (
-        <Box sx={{ margin: 3 }}>
-            <Typography variant="h4">Your Favorite Blogs</Typography>
-            {favoriteBlogs.map(blog => (
-                <BlogCard key={blog.id} blog={blog} showDeleteIcon={false} />
+        <div>
+            <h1>My Favorites</h1>
+            {favorites.map(favorite => (
+                <BlogCard key={favorite.id} blogId={favorite.blogId} />
+                // Assume BlogCard is adapted to take a blogId and fetch/display the blog details
             ))}
-        </Box>
+        </div>
     );
 };
 

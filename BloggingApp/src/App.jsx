@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ViewBlogsPage from './pages/ViewBlogsPage';
 import ViewBlogDetailsPage from './pages/ViewBlogDetailsPage';
-import FavoritesPage from './pages/FavoritesPage'; // Import the new FavoritesPage
+import FavoritesPage from './pages/ViewFavoritesPage'; // Import the new FavoritesPage
 import Navbar from './components/Navbar';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
     { path: '/home', element: <HomePage /> },
     { path: '/viewblogs', element: <ViewBlogsPage /> },
     { path: '/viewblogs/:id', element: <ViewBlogDetailsPage /> },
-    { path: '/favorites', element: <FavoritesPage /> }, // New route for FavoritesPage
+    { path: '/favorites', element: <FavoritesPage /> }, 
     { path: '*', element: <NotFoundPage /> }
   ]);
 

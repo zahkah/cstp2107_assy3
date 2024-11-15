@@ -42,7 +42,7 @@ const ViewBlogDetailsPage = () => {
     );
     try {
       await setDoc(favoriteDoc, {
-        userId: currentUser.uid, //getting current user id
+        userId: currentUser.uid, 
         ...blog, //adding everything from the blog for later to fetch in view favorite
       });
       console.log(blog.id, "this is coming from add favorite ٩꒰ʘʚʘ๑꒱۶");
