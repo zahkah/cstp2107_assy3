@@ -24,7 +24,7 @@ const CreateBlog = () => {
     const blogCollectionReference = collection(db, "blogs");
 
     const handleCreateBlog = async (event) => {
-        event.preventDefault(); // Prevent the form from submitting traditionally
+        event.preventDefault(); 
 
         if (!blogInfo.title || !blogInfo.description || !blogInfo.category) {
             setAlertConfig({ isOpen: true, message: 'Please fill in all fields', color: 'error' });

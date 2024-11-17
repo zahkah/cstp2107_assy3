@@ -4,32 +4,39 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebaseConfig';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 
-const BlogCard = ({ blog, deleteBlog, toggleFavorite, isFavorite, showDeleteIcon = true }) => {
+const BlogCard = ({ blog, deleteBlog, isFavorite, currentUser }) => {
     const navigate = useNavigate();
-
-    // Handle favorite button click
-    const handleFavoriteClick = () => {
-        toggleFavorite(blog.id);
+    
+    const handleFavoriteClick = async () => {
+        const favoriteRef = doc(db, 'favorites', `${currentUser.uid}_${blog.id}`);
+        if (isFavorite) {
+            await deleteDoc(favoriteRef);
+        } else {
+            await setDoc(favoriteRef, {
+                userId: currentUser.uid,
+                blogId: blog.id
+            });
+        }
     };
 
     return (
         <Card style={{ position: 'relative' }}>
             <CardMedia
                 sx={{ height: 140 }}
-                image={blog.image || 'placeholder-image-url'} // Provide a placeholder if blog.image is undefined
+                image={blog.image || 'placeholder-image-url'}
                 title={blog.title || 'Blog Image'}
             />
-            {showDeleteIcon && (
-                <IconButton
-                    style={{ position: 'absolute', right: '10px', top: '5px' }}
-                    aria-label="delete"
-                    size="small"
-                    onClick={() => deleteBlog(blog.id)}
-                >
-                    <DeleteIcon fontSize="inherit" />
-                </IconButton>
-            )}
+            <IconButton
+                style={{ position: 'absolute', right: '10px', top: '5px' }}
+                aria-label="delete"
+                size="small"
+                onClick={() => deleteBlog(blog.id)}
+            >
+                <DeleteIcon fontSize="inherit" />
+            </IconButton>
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                     {blog.title}

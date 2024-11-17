@@ -1,12 +1,12 @@
 import './App.css';
 import { useRoutes } from 'react-router-dom';
-import SignInPage from './pages/SignIn';
-import SignUpPage from './pages/SignUp';
+import SignInPage from './pages/Signin';  // Changed from SignIn to Signin to match the file naming in your structure
+import SignUpPage from './pages/Signup';  // Changed from SignUp to Signup to match the file naming in your structure
 import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ViewBlogsPage from './pages/ViewBlogsPage';
 import ViewBlogDetailsPage from './pages/ViewBlogDetailsPage';
-import FavoritesPage from './pages/ViewFavoritesPage'; // Import the new FavoritesPage
+import FavoritesPage from './pages/ViewFavoritesPage';  // Make sure the file is named ViewFavoritesPage and not FavoritesPage
 import Navbar from './components/Navbar';
 
 function App() {

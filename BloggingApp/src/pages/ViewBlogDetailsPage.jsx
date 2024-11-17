@@ -17,7 +17,7 @@ const ViewBlogDetailsPage = () => {
   const [blogData, setBlogData] = useState({});
   const [favoritesList, setFavoritesList] = useState([]); // Store favorites
   const [alertConfig, setAlertConfig] = useState({});
-  const [currentUser, setCurrentUser] = useLocalStorage("current_user", null);
+  const [currentUser, _setCurrentUser] = useLocalStorage("current_user", null);
   const favoriteBlogCollectionReference = collection(db, "favorite");
 
   const getBlogData = async () => {

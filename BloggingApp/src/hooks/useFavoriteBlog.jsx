@@ -1,26 +1,21 @@
-// import { useEffect, useState, useContext } from 'react';
-// import { db } from '../firebaseConfig';
-// import { collection, query, where, onSnapshot } from 'firebase/firestore';
-// import { AuthContext } from '../contexts/AuthContext'; // Assuming you have an Auth context
+import React from 'react';
+import { useFetchFavorites } from '../hooks/useFetchFavorites';
+import { useAuth } from '../contexts/AuthContext'; // Assuming you have an authentication context
 
-// const useFavoriteBlogs = () => {
-//     const { user } = useContext(AuthContext); // Get user from context
-//     const [favoriteBlogs, setFavoriteBlogs] = useState([]);
+const FavoritesComponent = () => {
+  const { currentUser } = useAuth(); // Retrieve the current user from context
+  const favorites = useFetchFavorites(currentUser?.uid);
 
-//     useEffect(() => {
-//         if (user) {
-//             const favRef = collection(db, 'favorites');
-//             const q = query(favRef, where('userId', '==', user.uid));
-//             const unsubscribe = onSnapshot(q, (snapshot) => {
-//                 const blogs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-//                 setFavoriteBlogs(blogs);
-//             });
+  return (
+    <div>
+      <h1>Your Favorites</h1>
+      <ul>
+        {favorites.map(fav => (
+          <li key={fav.id}>{fav.title}</li> // Assuming your favorites have a 'title' field
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-//             return () => unsubscribe(); // Clean up subscription
-//         }
-//     }, [user]);
-
-//     return favoriteBlogs;
-// };
-
-// export default useFavoriteBlogs;
+export default FavoritesComponent;
