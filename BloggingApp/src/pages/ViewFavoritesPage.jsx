@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, deleteDoc, doc, getDocs } from 'firebase/firestore';
+import { collection, deleteDoc, doc, getDocs, setDoc } from 'firebase/firestore';
 import { db } from '../firebaseConfig';
 import { Button, Box, Divider, Typography } from '@mui/material';
 import BlogCard from '../components/BlogCard';
@@ -15,7 +15,7 @@ const ViewFavoritePage = () => {
     const [alertConfig, setAlertConfig] = useState({});
     const navigate = useNavigate();
 
-    // Fetch the list of favorite blogs from Firestore
+    // Fetch favorites
     const fetchFavorites = async () => {
         if (!currentUser) return;
         const querySnapshot = await getDocs(favoritesCollectionRef);
@@ -25,25 +25,33 @@ const ViewFavoritePage = () => {
         setFavoritesList(favorites);
     };
 
-    // Function to remove a blog from favorites
-    const removeFavorite = async (blogId) => {
-        const favoriteDocRef = doc(db, "favorites", `${currentUser.uid}_${blogId}`);
+    // Add or remove favorites
+    const updateFavorite = async (blog, add = true) => {
+        const favoriteDocRef = doc(db, "favorites", `${currentUser.uid}_${blog.id}`);
         try {
-            await deleteDoc(favoriteDocRef);
-            setFavoritesList(prev => prev.filter(favorite => favorite.id !== blogId));
-            setAlertConfig({ isOpen: true, message: 'Removed from favorites', color: 'success' });
+            if (add) {
+                await setDoc(favoriteDocRef, { userId: currentUser.uid, ...blog });
+                setFavoritesList(prev => [...prev, blog]);
+                setAlertConfig({ message: 'Added to favorites', color: 'success', isOpen: true });
+            } else {
+                await deleteDoc(favoriteDocRef);
+                setFavoritesList(prev => prev.filter(favorite => favorite.id !== blog.id));
+                setAlertConfig({ message: 'Removed from favorites', color: 'success', isOpen: true });
+            }
         } catch (error) {
-            setAlertConfig({ isOpen: true, message: 'Error removing from favorites', color: 'error' });
+            setAlertConfig({ message: `Error ${add ? 'adding to' : 'removing from'} favorites`, color: 'error', isOpen: true });
         }
     };
 
     useEffect(() => {
         fetchFavorites();
-    }, []);
+    }, [ currentUser ]);
 
     return (
         <Box display="flex" flexDirection="column" gap="20px">
-            <Button onClick={() => navigate('/home')} startIcon={<ArrowBackIcon />}>Back</Button>
+            <Button onClick={() => navigate('/home')} startIcon={<ArrowBackIcon />}>
+                Back
+            </Button>
             <Typography variant="h3" gutterBottom>View Your Favorite Blogs</Typography>
             <Divider />
             <Box display="grid" gridTemplateColumns="repeat(3, 1fr)" gap="12px">
@@ -52,7 +60,8 @@ const ViewFavoritePage = () => {
                         key={index}
                         blog={blog}
                         showDeleteIcon={true}
-                        deleteBlog={() => removeFavorite(blog.id)}
+                        deleteBlog={() => updateFavorite(blog, false)}
+                        addFavorite={() => updateFavorite(blog, true)}
                     />
                 ))}
             </Box>
